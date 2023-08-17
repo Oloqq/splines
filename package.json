@@ -1,0 +1,19 @@
+{
+    "name": "ts-app",
+    "type": "module",
+    "source": "src/index.ts",
+    "exports": {
+        "require": "./dist/foo.cjs",
+        "default": "./dist/foo.modern.js"
+    },
+    "main": "./dist/foo.cjs",
+    "module": "./dist/foo.module.js",
+    "unpkg": "./dist/foo.umd.js",
+    "scripts": {
+        "build": "microbundle",
+        "dev": "microbundle watch"
+    },
+    "devDependencies": {
+        "microbundle": "^0.15.1"
+    }
+}
