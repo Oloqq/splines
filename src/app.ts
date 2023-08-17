@@ -7,10 +7,15 @@ export class App {
 
   x: number = 500;
   dx: number = 10;
+  obj: any
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = makeConte(canvas.getContext("2d")!);
+
+    this.obj = {
+      bruh: 600
+    }
   }
 
   run() {
@@ -29,6 +34,10 @@ export class App {
   }
 
   update() {
+    if (this.obj.bruh == 500) {
+      console.log("a");
+    }
+
     this.x += this.dx;
     if (this.x > 800) {
       this.dx = -10;
@@ -46,5 +55,10 @@ export class App {
       this.ctx.bezierCurveTo(300, 200, 400, 200, this.x, 500);
       this.ctx.stroke();
     });
+  }
+
+  causeError() {
+    console.log("causing error");
+    this.obj = undefined;
   }
 }
