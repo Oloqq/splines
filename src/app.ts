@@ -1,6 +1,8 @@
 import { Conte, makeConte } from "./lib/conte";
 import { V2 } from "./lib/vector";
 import { Spline, BezierSpline } from "./splines";
+import { styles } from "./style";
+
 
 export class App {
   canvas: HTMLCanvasElement;
@@ -8,6 +10,7 @@ export class App {
 
   splines: Spline[] = [];
   grip: V2|undefined;
+  activeSplineId: number|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -44,8 +47,23 @@ export class App {
     }
   }
 
-  activate(s: Spline) {
+  activeSpline(action: (spline: Spline) => void): Spline|undefined {
+    if (this.activeSplineId !== undefined) {
+      let spline = this.splines[this.activeSplineId];
+      action(spline);
+      return spline
+    }
+    return undefined;
+  }
 
+  activate(splineId: number) {
+    this.activeSpline((s) => {
+      s.style = styles.DEFAULT;
+    });
+    this.activeSplineId = splineId;
+    this.activeSpline((s) => {
+      s.style = styles.ACTIVE;
+    });
   }
 
   mouseup(pos: V2) {
@@ -53,12 +71,11 @@ export class App {
   }
 
   mousedown(pos: V2) {
-    for (let spline of this.splines) {
+    for (let [i, spline] of this.splines.entries()) {
       let grip = spline.catch(pos);
       if (grip !== undefined) {
-        this.activate(spline);
+        this.activate(i);
         this.grip = grip;
-        console.log(grip);
         break;
       }
     }
