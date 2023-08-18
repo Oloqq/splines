@@ -101,9 +101,4 @@ export class App extends AppTemplate {
   mousemove(pos: V2, more: MouseEvent, drag: boolean = false) {
     if (drag) this.grip.drag(pos);
   }
-
-  causeError() {
-    // console.log("causing error");
-    // this.obj = undefined;
-  }
 }

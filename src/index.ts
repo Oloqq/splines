@@ -48,7 +48,6 @@ function init() {
   let newBezier = document.getElementById("new bezier spline")! as HTMLButtonElement;
   newBezier.addEventListener("click", () => {
     status.info("new bezier spline requested, not implemented");
-    app.causeError()
   });
 
   app.run();
