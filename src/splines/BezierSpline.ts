@@ -1,5 +1,5 @@
 import styles from "../style";
-import { ControlPoint } from "./ControlPoint";
+import { ControlPoint, Constraints } from "./ControlPoint";
 import { Spline, Conte, V2 } from "./Spline";
 
 export class BezierSpline extends Spline {
@@ -61,6 +61,23 @@ export class BezierSpline extends Spline {
       this.points.push(new ControlPoint(points[i+1], styles.points.SKEWER));
       this.points.push(new ControlPoint(points[i+2], styles.points.JOINT));
     }
+
+    return this;
+  }
+
+  setConstraint(pointId: number, constraint: Constraints): BezierSpline {
+    if (pointId < 0) {
+      pointId = this.points.length - pointId;
+      if (pointId < 0) {
+        throw new Error(`Invalid pointId ${this.points.length + pointId} evaluated to ${pointId}`);
+      }
+    }
+    else if (pointId >= this.points.length) {
+      throw new Error(`Invalid pointId ${pointId} greater than actual points count`);
+    }
+
+    let point = this.points[pointId];
+    point.constraints = constraint;
 
     return this;
   }

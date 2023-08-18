@@ -1,6 +1,7 @@
 import { App as AppTemplate } from "./lib/app";
 import { V2 } from "./lib/vector";
 import { ControlPoint, Spline, BezierSpline } from "./splines";
+import { Constraints } from "./splines/ControlPoint";
 import styles from "./style";
 
 const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
@@ -46,6 +47,7 @@ export class App extends AppTemplate {
       new V2(420, 700)
       ])
       .prepend([new V2(100, 300), new V2(0, 300), new V2(400, 200)])
+      .setConstraint(-1, Constraints.FIX_LEFT)
       .append([new V2(420, 750), new V2(640, 500), new V2(680, 500)])
     );
   }
