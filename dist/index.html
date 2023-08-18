@@ -12,16 +12,30 @@
     </style>
 </head>
 <body>
-    <button id="new bezier spline">new bezier spline</button>
-    <button id="fix neighbors">Fix</button>
-    <button id="align">align</button>
-    <button id="mirror">mirror</button>
-    <br>
-    <canvas id="canvas" tabindex="1" width="800" height="800" style="border: 1px solid black"></canvas>
-    <br>
-    <div id="status">Status message goes here</div>
-    <br>
-    <div id="status">See console for full log</div>
+    <table>
+        <tr>
+            <td colspan="2">
+                <button id="new bezier spline">new bezier spline</button>
+                <button id="fix neighbors">Fix</button>
+                <button id="align">align</button>
+                <button id="mirror">mirror</button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <canvas id="canvas" tabindex="1" width="800" height="800" style="border: 1px solid black"></canvas>
+            </td>
+            <td>
+                <input id="move together" type="checkbox" checked> Move joints with it's skewers </input>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div id="status">Status message goes here</div>
+            </td>
+        </tr>
+    </table>
+
     <script src="foo.modern.js"></script>
 </body>
 </html>

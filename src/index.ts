@@ -46,8 +46,7 @@ function init() {
     app.mousedown(mousePos, e);
   });
 
-  let newBezier = document.getElementById("new bezier spline")! as HTMLButtonElement;
-  newBezier.addEventListener("click", () => {
+  document.getElementById("new bezier spline")!.addEventListener("click", () => {
     status.info("new bezier spline requested, not implemented");
   });
 
@@ -58,6 +57,39 @@ function init() {
     }
     app.grip.addConstraints(Constraints.MOVE_WITH_NEIGHBORS);
   });
+
+  document.getElementById("align")!.addEventListener("click", () => {
+    status.info("align not implemented");
+  });
+
+  document.getElementById("mirror")!.addEventListener("click", () => {
+    status.info("mirror not implemented");
+  });
+
+  (function setup_movetogether() {
+    let movetogether = document.getElementById("move together")! as HTMLInputElement;
+    let movetogether_applier = () => {
+      if (movetogether.checked) {
+        for (let s of app.splines) {
+          for (let i = 0; i < s.points.length; i ++) {
+            s.setConstraint(i, Constraints.MOVE_WITH_NEIGHBORS);
+          }
+        }
+        status.info("Each control point has to be moved individually");
+      }
+      else {
+        for (let s of app.splines) {
+          for (let i = 0; i < s.points.length; i ++) {
+            s.setConstraint(i, Constraints.NONE);
+          }
+        }
+        status.info("Moving each joint will move it's skewers as well");
+      }
+    };
+    movetogether_applier();
+    status.info("Status messages are displayed here");
+    movetogether.addEventListener("click", movetogether_applier);
+  })();
 
   app.run();
 }
