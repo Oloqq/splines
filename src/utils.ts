@@ -19,10 +19,12 @@ export class V2 {
 type StyledDrawFunc = (styleFunc: (ctx: Conte) => void, drawFunc: () => void) => void
 
 export interface Conte extends CanvasRenderingContext2D {
-  withStyle: StyledDrawFunc
-  styledStroke: StyledDrawFunc
+  withStyle: StyledDrawFunc;
+  styledStroke: StyledDrawFunc;
 
-  // vMoveTo: (v: V2) => void
+  vMoveTo: (v: V2) => void;
+  vLineTo: (v: V2) => void;
+  vBezierTo: (v1: V2, v2: V2, v3: V2) => void;
 }
 export function makeConte(ctx: CanvasRenderingContext2D): Conte {
   let c = ctx as Conte;
@@ -39,6 +41,15 @@ export function makeConte(ctx: CanvasRenderingContext2D): Conte {
     drawFunc();
     this.stroke();
     this.restore();
+  }
+  c.vMoveTo = function (v: V2) {
+    this.moveTo(v.x, v.y);
+  }
+  c.vLineTo = function (v: V2) {
+    this.moveTo(v.x, v.y);
+  }
+  c.vBezierTo = function (v1: V2, v2: V2, v3: V2) {
+    this.bezierCurveTo(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
   }
   return c;
 }
