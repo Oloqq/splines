@@ -1,5 +1,6 @@
 import { App } from "./app";
-import { V2 } from "./utils";
+import { V2 } from "./lib/vector";
+
 
 function getMousePos(canvas: HTMLCanvasElement, mouseEvent: MouseEvent): V2 {
   let rect = canvas.getBoundingClientRect();

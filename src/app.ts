@@ -1,4 +1,5 @@
-import { Conte, makeConte, V2 } from "./utils";
+import { Conte, makeConte } from "./lib/conte";
+import { V2 } from "./lib/vector";
 import { Spline, BezierSpline } from "./splines";
 
 export class App {

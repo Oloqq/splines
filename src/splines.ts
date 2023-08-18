@@ -1,6 +1,5 @@
-export { Conte, V2 } from "./utils";
 export { SplineStyle, styles } from "./style";
 
-export { Spline } from "./Spline";
-export { BezierSpline } from "./BezierSpline";
+export { Spline, Conte, V2 } from "./splines/Spline";
+export { BezierSpline } from "./splines/BezierSpline";
 

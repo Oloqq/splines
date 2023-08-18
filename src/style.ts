@@ -1,4 +1,4 @@
-import { Conte } from "./utils";
+import { Conte } from "./lib/conte";
 
 export interface SplineStyle {
   curve: (ctx: Conte) => void;

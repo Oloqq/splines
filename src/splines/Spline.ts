@@ -1,6 +1,11 @@
-import { SplineStyle, styles } from "./style";
-import { Conte, V2 } from "./utils";
-export { Conte, V2 } from "./utils"; // Re-exports for deriving classes
+import { SplineStyle, styles } from "../style";
+import { Conte } from "../lib/conte";
+import { V2 } from "../lib/vector";
+
+// Re-exports for deriving classes
+export { Conte } from "../lib/conte";
+export { V2 } from "../lib/vector";
+
 
 export abstract class Spline {
   points: V2[];
