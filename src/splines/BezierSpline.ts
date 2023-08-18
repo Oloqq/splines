@@ -1,4 +1,5 @@
-import { Spline, Conte, V2 } from "./Spline";
+import styles from "../style";
+import { Spline, Conte, V2, ControlPoint } from "./Spline";
 
 export class BezierSpline extends Spline {
   constructor(points: V2[]) {
@@ -31,5 +32,35 @@ export class BezierSpline extends Spline {
     for (let p of this.points) {
       p.draw(ctx);
     }
+  }
+
+  prepend(points: V2[]): BezierSpline {
+    if (points.length % 3 !== 0) {
+      throw new Error(`Points vector does not describe a valid spline extension. Incorrect length: ${points.length}`)
+    }
+
+    let prefix = [];
+    for (let i = 0; i < points.length; i += 3) {
+      prefix.push(new ControlPoint(points[i], styles.points.JOINT));
+      prefix.push(new ControlPoint(points[i+1], styles.points.SKEWER));
+      prefix.push(new ControlPoint(points[i+2], styles.points.SKEWER));
+    }
+    this.points.unshift(...prefix);
+
+    return this;
+  }
+
+  append(points: V2[]): BezierSpline {
+    if (points.length % 3 !== 0) {
+      throw new Error(`Points vector does not describe a valid spline extension. Incorrect length: ${points.length}`)
+    }
+
+    for (let i = 0; i < points.length; i += 3) {
+      this.points.push(new ControlPoint(points[i], styles.points.SKEWER));
+      this.points.push(new ControlPoint(points[i+1], styles.points.SKEWER));
+      this.points.push(new ControlPoint(points[i+2], styles.points.JOINT));
+    }
+
+    return this;
   }
 }

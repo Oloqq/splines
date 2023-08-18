@@ -40,7 +40,14 @@ export class App extends AppTemplate {
     super(canvas);
 
     this.splines.push(BezierSpline.sample());
-    let b2 = new BezierSpline([new V2(100, 700), new V2(140, 500), new V2(180, 500), new V2(420, 700)]);
+    let b2 = new BezierSpline([
+      new V2(100, 700),
+      new V2(140, 500),
+      new V2(180, 500),
+      new V2(420, 700)
+      ])
+      .prepend([new V2(100, 300), new V2(0, 300), new V2(400, 200)])
+      .append([new V2(420, 750), new V2(640, 500), new V2(680, 500)])
     this.splines.push(b2);
   }
 
