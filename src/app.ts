@@ -39,8 +39,7 @@ export class App extends AppTemplate {
   constructor(canvas: HTMLCanvasElement) {
     super(canvas);
 
-    this.splines.push(BezierSpline.sample());
-    let b2 = new BezierSpline([
+    this.splines.push(new BezierSpline([
       new V2(100, 700),
       new V2(140, 500),
       new V2(180, 500),
@@ -48,7 +47,7 @@ export class App extends AppTemplate {
       ])
       .prepend([new V2(100, 300), new V2(0, 300), new V2(400, 200)])
       .append([new V2(420, 750), new V2(640, 500), new V2(680, 500)])
-    this.splines.push(b2);
+    );
   }
 
   draw() {

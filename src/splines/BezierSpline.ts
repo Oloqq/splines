@@ -1,5 +1,6 @@
 import styles from "../style";
-import { Spline, Conte, V2, ControlPoint } from "./Spline";
+import { ControlPoint } from "./ControlPoint";
+import { Spline, Conte, V2 } from "./Spline";
 
 export class BezierSpline extends Spline {
   constructor(points: V2[]) {

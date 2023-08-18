@@ -1,6 +1,6 @@
 import { App } from "./app";
 import { V2 } from "./lib/vector";
-
+import { status } from "./status";
 
 function getMousePos(canvas: HTMLCanvasElement, mouseEvent: MouseEvent): V2 {
   let rect = canvas.getBoundingClientRect();
@@ -45,8 +45,11 @@ function init() {
     app.mousedown(mousePos, e);
   });
 
-  let causeError = document.getElementById("cause error")! as HTMLButtonElement;
-  causeError.addEventListener("click", () => { app.causeError() });
+  let newBezier = document.getElementById("new bezier spline")! as HTMLButtonElement;
+  newBezier.addEventListener("click", () => {
+    status.info("new bezier spline requested, not implemented");
+    app.causeError()
+  });
 
   app.run();
 }
