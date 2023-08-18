@@ -22,9 +22,9 @@ export class BezierSpline extends Spline {
         ctx.vbezierTo(this.points[i+1], this.points[i+2], this.points[i+3]);
       });
       ctx.withStyle(this.style.joints, () => {
-        draw_node(this.points[i], 20);
-        draw_node(this.points[i+1], 10);
-        draw_node(this.points[i+2], 10);
+        draw_node(this.points[i], this.style.jointSize);
+        draw_node(this.points[i+1], this.style.skewerSize);
+        draw_node(this.points[i+2], this.style.skewerSize);
       });
       ctx.withStyle(this.style.skewers, () => {
         ctx.beginPath();
@@ -39,7 +39,7 @@ export class BezierSpline extends Spline {
       });
     }
     ctx.withStyle(this.style.joints, () => {
-      draw_node(this.points[this.points.length - 1], 20);
+      draw_node(this.points[this.points.length - 1], this.style.jointSize);
     });
   }
 }

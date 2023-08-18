@@ -4,6 +4,8 @@ export interface SplineStyle {
   curve: (ctx: Conte) => void;
   joints: (ctx: Conte) => void;
   skewers: (ctx: Conte) => void;
+  jointSize: number;
+  skewerSize: number;
 }
 
 export const styles = {
@@ -20,6 +22,8 @@ export const styles = {
       ctx.setLineDash([5, 3]);
       ctx.strokeStyle = "rgb(80, 120, 255)";
     },
+    jointSize: 15,
+    skewerSize: 10,
   } as SplineStyle,
 
   ACTIVE: {
@@ -34,5 +38,7 @@ export const styles = {
       ctx.lineWidth = 1;
       ctx.setLineDash([5, 3]);
     },
+    jointSize: 15,
+    skewerSize: 10,
   } as SplineStyle
 }
