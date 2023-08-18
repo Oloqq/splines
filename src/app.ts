@@ -6,12 +6,15 @@ export class App {
   ctx: Conte;
 
   splines: Spline[] = [];
+  grip: V2|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = makeConte(canvas.getContext("2d")!);
 
     this.splines.push(BezierSpline.sample());
+    let b2 = new BezierSpline([new V2(100, 700), new V2(140, 500), new V2(180, 500), new V2(420, 700)]);
+    this.splines.push(b2);
   }
 
   run() {
@@ -40,8 +43,31 @@ export class App {
     }
   }
 
-  translate(v: V2) {
-    this.ctx.vtranslate(v);
+  activate(s: Spline) {
+
+  }
+
+  mouseup(pos: V2) {
+    this.grip = undefined;
+  }
+
+  mousedown(pos: V2) {
+    for (let spline of this.splines) {
+      let grip = spline.catch(pos);
+      if (grip !== undefined) {
+        this.activate(spline);
+        this.grip = grip;
+        console.log(grip);
+        break;
+      }
+    }
+  }
+
+  mousemove(pos: V2) {
+    if (this.grip !== undefined) {
+      this.grip.x = pos.x;
+      this.grip.y = pos.y;
+    }
   }
 
   causeError() {

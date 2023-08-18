@@ -14,16 +14,16 @@ function init() {
   canvas.addEventListener("keydown", (e) => {
     switch (e.code) {
       case "ArrowLeft":
-        app.translate(new V2(10, 0));
+        app.ctx.vtranslate(new V2(10, 0));
         break;
       case "ArrowRight":
-        app.translate(new V2(-10, 0));
+        app.ctx.vtranslate(new V2(-10, 0));
         break;
       case "ArrowUp":
-        app.translate(new V2(0, 10));
+        app.ctx.vtranslate(new V2(0, 10));
         break;
       case "ArrowDown":
-        app.translate(new V2(0, -10));
+        app.ctx.vtranslate(new V2(0, -10));
         break;
       default:
         break;
@@ -32,8 +32,14 @@ function init() {
 
   canvas.addEventListener("mousemove", (e) => {
     mousePos = app.ctx.canvsasToWorld(getMousePos(canvas, e));
-    console.log(mousePos);
-  })
+    app.mousemove(mousePos);
+  });
+  canvas.addEventListener("mouseup", (e) => {
+    app.mouseup(mousePos);
+  });
+  canvas.addEventListener("mousedown", (e) => {
+    app.mousedown(mousePos);
+  });
 
   let causeError = document.getElementById("cause error")! as HTMLButtonElement;
   causeError.addEventListener("click", () => { app.causeError() });

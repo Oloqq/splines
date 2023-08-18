@@ -14,6 +14,10 @@ export class V2 {
   sub(v: V2): V2 {
     return new V2(this.x - v.x, this.y - v.y);
   }
+
+  distance(v: V2): number {
+    return Math.sqrt((this.x - v.x) ** 2 + (this.y - v.y) ** 2);
+  }
 }
 
 type StyledDrawFunc = (styleFunc: (ctx: Conte) => void, drawFunc: () => void) => void

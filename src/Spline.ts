@@ -14,4 +14,13 @@ export abstract class Spline {
   }
 
   abstract draw(ctx: Conte): void;
+
+  catch(v: V2): V2|undefined {
+    for (let p of this.points) {
+      if (p.distance(v) < 20) {
+        return p;
+      }
+    }
+    return undefined
+  }
 }
