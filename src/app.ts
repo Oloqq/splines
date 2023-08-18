@@ -1,47 +1,22 @@
-import { Conte, makeConte } from "./lib/conte";
+import { App as AppTemplate } from "./lib/app";
 import { V2 } from "./lib/vector";
 import { Spline, BezierSpline } from "./splines";
 import { styles } from "./style";
 
-
-export class App {
-  canvas: HTMLCanvasElement;
-  ctx: Conte;
-
+export class App extends AppTemplate {
   splines: Spline[] = [];
   grip: V2|undefined;
   activeSplineId: number|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
-    this.ctx = makeConte(canvas.getContext("2d")!);
+    super(canvas);
 
     this.splines.push(BezierSpline.sample());
     let b2 = new BezierSpline([new V2(100, 700), new V2(140, 500), new V2(180, 500), new V2(420, 700)]);
     this.splines.push(b2);
   }
 
-  run() {
-    let drawLoop = () => {
-      let t = window.setTimeout(drawLoop, 1000 / 60);
-      try {
-        this.update();
-        this.draw();
-      }
-      catch (e) {
-        clearTimeout(t);
-        throw e;
-      }
-    };
-    drawLoop();
-  }
-
-  update() {
-  }
-
   draw() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     for (let spline of this.splines) {
       spline.draw(this.ctx);
     }
