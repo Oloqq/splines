@@ -39,6 +39,10 @@ export abstract class Spline {
   }
 
   shift(pointId: number, diff: V2) {
-    this.points[pointId].incr(diff);
+    let p = this.points[pointId];
+    p.incr(diff);
+    // if (p.requires(Constraints.FIX_LEFT)) {
+    //   this.points[pointId - 1].incr(diff);
+    // }
   }
 }

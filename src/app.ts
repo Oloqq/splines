@@ -1,43 +1,9 @@
+import { Grip } from "./grip";
 import { App as AppTemplate } from "./lib/app";
 import { V2 } from "./lib/vector";
 import { ControlPoint, Spline, BezierSpline } from "./splines";
 import { Constraints } from "./splines/ControlPoint";
 import styles from "./style";
-
-const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
-
-type GripId = [number, number];
-
-class Grip {
-  points: Set<GripId> = new Set();
-  anchor: ControlPoint = DUMMY;
-  splines: Spline[];
-
-  constructor(splines: Spline[]) {
-    this.splines = splines;
-  }
-
-  clear() {
-    for (let [splineid, pointid] of this.points) {
-      this.splines[splineid].points[pointid].active = false;
-    }
-    this.anchor = DUMMY;
-    this.points.clear();
-  }
-
-  expand(point: ControlPoint, location: GripId) {
-    point.active = true;
-    this.points.add(location);
-    this.anchor = point;
-  }
-
-  drag(pos: V2) {
-    let diff = pos.sub(this.anchor);
-    for (let [splineid, pointid] of this.points) {
-      this.splines[splineid].shift(pointid, diff);
-    }
-  }
-}
 
 export class App extends AppTemplate {
   splines: Spline[] = [];

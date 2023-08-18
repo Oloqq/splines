@@ -76,8 +76,8 @@ export class BezierSpline extends Spline {
     else if (pointId >= this.points.length) {
       throw new Error(`Invalid pointId ${pointId} greater than actual points count`);
     }
-    console.log(pointId);
-    console.log(this.points);
+    // console.log(pointId);
+    // console.log(this.points);
     let point = this.points[pointId];
     point.constraints = constraint;
 

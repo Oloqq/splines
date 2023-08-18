@@ -33,4 +33,8 @@ export class ControlPoint extends V2 {
     ctx.arc(this.x, this.y, this.style.radius, 0, 2 * Math.PI);
     ctx.stroke();
   }
+
+  requires(con: Constraints): boolean {
+    return (con & this.constraints) === con;
+  }
 }
