@@ -1,4 +1,4 @@
-import { Conte, makeConte } from "./utils";
+import { Conte, makeConte, V2 } from "./utils";
 import { Spline, BezierSpline } from "./splines";
 
 export class App {
@@ -38,6 +38,10 @@ export class App {
     for (let spline of this.splines) {
       spline.draw(this.ctx);
     }
+  }
+
+  translate(x: number, y: number) {
+    this.ctx.translate(x, y);
   }
 
   causeError() {
