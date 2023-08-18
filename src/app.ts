@@ -40,8 +40,8 @@ export class App {
     }
   }
 
-  translate(x: number, y: number) {
-    this.ctx.translate(x, y);
+  translate(v: V2) {
+    this.ctx.vtranslate(v);
   }
 
   causeError() {

@@ -9,24 +9,30 @@ function getMousePos(canvas: HTMLCanvasElement, mouseEvent: MouseEvent): V2 {
 function init() {
   let canvas = document.getElementById("canvas")! as HTMLCanvasElement;
   let app = new App(canvas);
+  let mousePos = new V2(0, 0);
 
   canvas.addEventListener("keydown", (e) => {
     switch (e.code) {
       case "ArrowLeft":
-        app.translate(10, 0);
+        app.translate(new V2(10, 0));
         break;
       case "ArrowRight":
-        app.translate(-10, 0);
+        app.translate(new V2(-10, 0));
         break;
       case "ArrowUp":
-        app.translate(0, 10);
+        app.translate(new V2(0, 10));
         break;
       case "ArrowDown":
-        app.translate(0, -10);
+        app.translate(new V2(0, -10));
         break;
       default:
         break;
     }
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    mousePos = app.ctx.canvsasToWorld(getMousePos(canvas, e));
+    console.log(mousePos);
   })
 
   let causeError = document.getElementById("cause error")! as HTMLButtonElement;

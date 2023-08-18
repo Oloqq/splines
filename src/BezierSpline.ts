@@ -18,8 +18,8 @@ export class BezierSpline extends Spline {
 
     for (let i = 0; i < this.points.length - 1; i += 3) {
       ctx.styledStroke(this.style.curve, () => {
-        ctx.vMoveTo(this.points[i]);
-        ctx.vBezierTo(this.points[i+1], this.points[i+2], this.points[i+3]);
+        ctx.vmoveTo(this.points[i]);
+        ctx.vbezierTo(this.points[i+1], this.points[i+2], this.points[i+3]);
       });
       ctx.withStyle(this.style.joints, () => {
         draw_node(this.points[i], 20);
@@ -28,13 +28,13 @@ export class BezierSpline extends Spline {
       });
       ctx.withStyle(this.style.skewers, () => {
         ctx.beginPath();
-        ctx.vMoveTo(this.points[i]);
-        ctx.vLineTo(this.points[i+1]);
+        ctx.vmoveTo(this.points[i]);
+        ctx.vlineTo(this.points[i+1]);
         ctx.stroke();
 
         ctx.beginPath();
-        ctx.vMoveTo(this.points[i+3]);
-        ctx.vLineTo(this.points[i+2]);
+        ctx.vmoveTo(this.points[i+3]);
+        ctx.vlineTo(this.points[i+2]);
         ctx.stroke();
       });
     }

@@ -19,12 +19,19 @@ export class V2 {
 type StyledDrawFunc = (styleFunc: (ctx: Conte) => void, drawFunc: () => void) => void
 
 export interface Conte extends CanvasRenderingContext2D {
+  // Styling
   withStyle: StyledDrawFunc;
   styledStroke: StyledDrawFunc;
 
-  vMoveTo: (v: V2) => void;
-  vLineTo: (v: V2) => void;
-  vBezierTo: (v1: V2, v2: V2, v3: V2) => void;
+  // Vector based drawing
+  vmoveTo: (v: V2) => void;
+  vlineTo: (v: V2) => void;
+  vbezierTo: (v1: V2, v2: V2, v3: V2) => void;
+
+  // Transformations
+  translation: V2;
+  vtranslate: (v: V2) => void;
+  canvsasToWorld: (v: V2) => V2;
 }
 export function makeConte(ctx: CanvasRenderingContext2D): Conte {
   let c = ctx as Conte;
@@ -42,15 +49,26 @@ export function makeConte(ctx: CanvasRenderingContext2D): Conte {
     this.stroke();
     this.restore();
   }
-  c.vMoveTo = function (v: V2) {
+
+  c.vmoveTo = function (v: V2) {
     this.moveTo(v.x, v.y);
   }
-  c.vLineTo = function (v: V2) {
+  c.vlineTo = function (v: V2) {
     this.lineTo(v.x, v.y);
   }
-  c.vBezierTo = function (v1: V2, v2: V2, v3: V2) {
+  c.vbezierTo = function (v1: V2, v2: V2, v3: V2) {
     this.bezierCurveTo(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
   }
+
+  c.translation = new V2(0, 0);
+  c.vtranslate = function (v: V2) {
+    this.translate(v.x, v.y);
+    this.translation = this.translation.add(v);
+  }
+  c.canvsasToWorld = function (v: V2): V2 {
+    return v.sub(this.translation);
+  }
+
   return c;
 }
 
