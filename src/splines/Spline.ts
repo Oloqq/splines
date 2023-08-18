@@ -1,7 +1,7 @@
 import { SplineStyle, styles } from "../style";
 import { Conte } from "../lib/conte";
 import { V2 } from "../lib/vector";
-import { ControlPoint } from "./ControlPoint";
+import { ControlPoint, Constraints } from "./ControlPoint";
 
 // Re-exports for deriving classes
 export { Conte } from "../lib/conte";
@@ -29,12 +29,16 @@ export abstract class Spline {
 
   abstract draw(ctx: Conte): void;
 
-  catch(v: V2): ControlPoint|undefined {
-    for (let p of this.points) {
+  catch(v: V2): [number, ControlPoint]|undefined {
+    for (let [i, p] of this.points.entries()) {
       if (p.caughtBy(v)) {
-        return p;
+        return [i, p];
       }
     }
     return undefined
+  }
+
+  shift(pointId: number, diff: V2) {
+    this.points[pointId].incr(diff);
   }
 }

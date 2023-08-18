@@ -6,35 +6,42 @@ import styles from "./style";
 
 const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
 
+type GripId = [number, number];
+
 class Grip {
-  points: Set<ControlPoint> = new Set();
+  points: Set<GripId> = new Set();
   anchor: ControlPoint = DUMMY;
+  splines: Spline[];
+
+  constructor(splines: Spline[]) {
+    this.splines = splines;
+  }
 
   clear() {
-    for (let g of this.points) {
-      g.active = false;
+    for (let [splineid, pointid] of this.points) {
+      this.splines[splineid].points[pointid].active = false;
     }
     this.anchor = DUMMY;
     this.points.clear();
   }
 
-  expand(point: ControlPoint) {
+  expand(point: ControlPoint, location: GripId) {
     point.active = true;
-    this.points.add(point);
+    this.points.add(location);
     this.anchor = point;
   }
 
   drag(pos: V2) {
     let diff = pos.sub(this.anchor);
-    for (let g of this.points) {
-      g.incr(diff);
+    for (let [splineid, pointid] of this.points) {
+      this.splines[splineid].shift(pointid, diff);
     }
   }
 }
 
 export class App extends AppTemplate {
   splines: Spline[] = [];
-  grip: Grip = new Grip();
+  grip: Grip = new Grip(this.splines);
   activeSplineId: number|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -47,7 +54,7 @@ export class App extends AppTemplate {
       new V2(420, 700)
       ])
       .prepend([new V2(100, 300), new V2(0, 300), new V2(400, 200)])
-      .setConstraint(-1, Constraints.FIX_LEFT)
+      // .setConstraint(-1, Constraints.FIX_LEFT)
       .append([new V2(420, 750), new V2(640, 500), new V2(680, 500)])
     );
   }
@@ -80,12 +87,13 @@ export class App extends AppTemplate {
   catchAt(pos: V2, appendGrip: boolean, dry = false): [number|undefined, ControlPoint|undefined] {
     let ispline: number, spline: Spline
     for ([ispline, spline] of this.splines.entries()) {
-      let gripped = spline.catch(pos);
-      if (gripped !== undefined) {
+      let catchResult = spline.catch(pos);
+      if (catchResult !== undefined) {
+        let [ipoint, gripped] = catchResult;
         if (!dry) {
           this.activate(ispline);
           if (!appendGrip) this.grip.clear();
-          this.grip.expand(gripped);
+          this.grip.expand(gripped, [ispline, ipoint]);
         }
         return [ispline, gripped];
       }
