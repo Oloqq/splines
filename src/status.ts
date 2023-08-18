@@ -10,6 +10,13 @@ class Status {
 
   info(what: string) {
     console.log(what);
+    this.element.setAttribute("style", "color: black");
+    this.element.innerText = what
+  }
+
+  warn(what: string) {
+    console.log(what);
+    this.element.setAttribute("style", "color: orange");
     this.element.innerText = what
   }
 }

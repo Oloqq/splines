@@ -42,9 +42,9 @@ export class BezierSpline extends Spline {
 
     let prefix = [];
     for (let i = 0; i < points.length; i += 3) {
-      prefix.push(new ControlPoint(points[i], styles.points.JOINT));
-      prefix.push(new ControlPoint(points[i+1], styles.points.SKEWER));
-      prefix.push(new ControlPoint(points[i+2], styles.points.SKEWER));
+      prefix.push(new ControlPoint(points[i], true));
+      prefix.push(new ControlPoint(points[i+1], false));
+      prefix.push(new ControlPoint(points[i+2], false));
     }
     this.points.unshift(...prefix);
 
@@ -57,9 +57,9 @@ export class BezierSpline extends Spline {
     }
 
     for (let i = 0; i < points.length; i += 3) {
-      this.points.push(new ControlPoint(points[i], styles.points.SKEWER));
-      this.points.push(new ControlPoint(points[i+1], styles.points.SKEWER));
-      this.points.push(new ControlPoint(points[i+2], styles.points.JOINT));
+      this.points.push(new ControlPoint(points[i], false));
+      this.points.push(new ControlPoint(points[i+1], false));
+      this.points.push(new ControlPoint(points[i+2], true));
     }
 
     return this;

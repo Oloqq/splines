@@ -2,6 +2,7 @@ import { SplineStyle, styles } from "../style";
 import { Conte } from "../lib/conte";
 import { V2 } from "../lib/vector";
 import { ControlPoint, Constraints } from "./ControlPoint";
+import { status } from "../status";
 
 // Re-exports for deriving classes
 export { Conte } from "../lib/conte";
@@ -19,11 +20,11 @@ export abstract class Spline {
 
     this.points = [];
 
-    this.points.push(new ControlPoint(points[0], styles.points.JOINT));
+    this.points.push(new ControlPoint(points[0], true));
     for (let i = 1; i < points.length; i += 3) {
-      this.points.push(new ControlPoint(points[i], styles.points.SKEWER));
-      this.points.push(new ControlPoint(points[i+1], styles.points.SKEWER));
-      this.points.push(new ControlPoint(points[i+2], styles.points.JOINT));
+      this.points.push(new ControlPoint(points[i], false));
+      this.points.push(new ControlPoint(points[i+1], false));
+      this.points.push(new ControlPoint(points[i+2], true));
     }
   }
 
@@ -38,7 +39,7 @@ export abstract class Spline {
     return undefined
   }
 
-  setConstraint(pointId: number, constraint: Constraints): void {
+  getPoint(pointId: number): ControlPoint {
     if (pointId < 0) {
       let passed = pointId;
       pointId = this.points.length + pointId;
@@ -49,21 +50,32 @@ export abstract class Spline {
     else if (pointId >= this.points.length) {
       throw new Error(`Invalid pointId ${pointId} greater than actual points count`);
     }
-    // console.log(pointId);
-    // console.log(this.points);
-    let point = this.points[pointId];
+    return this.points[pointId];
+  }
+
+  setConstraint(pointId: number, constraint: Constraints): void {
+    let point = this.getPoint(pointId);
+    if (!point.joint) {
+      status.warn("Can't set constraints on skewers");
+      return;
+    }
     point.constraints = constraint;
   }
 
   addConstraint(pointId: number, constraint: Constraints): void {
-    throw new Error("not implemented");
+    let point = this.getPoint(pointId);
+    this.setConstraint(pointId, point.constraints | constraint);
   }
 
   shift(pointId: number, diff: V2) {
+    if (pointId < 0 || pointId > this.points.length - 1)
+      return;
+
     let p = this.points[pointId];
     p.incr(diff);
-    // if (p.requires(Constraints.FIX_LEFT)) {
-    //   this.points[pointId - 1].incr(diff);
-    // }
+    if (p.requires(Constraints.MOVE_WITH_NEIGHBORS)) {
+      this.shift(pointId + 1, diff);
+      this.shift(pointId - 1, diff);
+    }
   }
 }

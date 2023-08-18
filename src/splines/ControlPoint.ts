@@ -1,4 +1,4 @@
-import { ControlPointStyle } from "../style";
+import styles, { ControlPointStyle } from "../style";
 import { V2 } from "../lib/vector";
 import { Conte } from "../lib/conte";
 
@@ -16,11 +16,13 @@ export enum Constraints {
 export class ControlPoint extends V2 {
   style: ControlPointStyle
   active: boolean = false;
+  joint: boolean;
   constraints: Constraints = Constraints.NONE;
 
-  constructor(pos: V2, style: ControlPointStyle) {
+  constructor(pos: V2, joint: boolean) {
     super(pos.x, pos.y);
-    this.style = style;
+    this.joint = joint;
+    this.style = joint ? styles.points.JOINT : styles.points.SKEWER;
   }
 
   caughtBy(hook: V2): boolean {

@@ -1,8 +1,9 @@
 import { ControlPoint, V2, Spline } from "./splines";
 import { Constraints } from "./splines/ControlPoint";
+import { status } from "./status";
 import styles from "./style";
 
-export const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
+export const DUMMY = new ControlPoint(new V2(0, 0), true);
 
 export type GripId = [number, number];
 type GripSet = Set<string>
@@ -32,7 +33,6 @@ export class Grip {
   expand(point: ControlPoint, location: GripId) {
     point.active = true;
     this.points.add(JSON.stringify(location));
-    console.log(this.points);
     this.anchor = point;
   }
 
