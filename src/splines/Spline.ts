@@ -38,6 +38,27 @@ export abstract class Spline {
     return undefined
   }
 
+  setConstraint(pointId: number, constraint: Constraints): void {
+    if (pointId < 0) {
+      let passed = pointId;
+      pointId = this.points.length + pointId;
+      if (pointId < 0) {
+        throw new Error(`Invalid pointId ${pointId} evaluated from ${passed}`);
+      }
+    }
+    else if (pointId >= this.points.length) {
+      throw new Error(`Invalid pointId ${pointId} greater than actual points count`);
+    }
+    // console.log(pointId);
+    // console.log(this.points);
+    let point = this.points[pointId];
+    point.constraints = constraint;
+  }
+
+  addConstraint(pointId: number, constraint: Constraints): void {
+    throw new Error("not implemented");
+  }
+
   shift(pointId: number, diff: V2) {
     let p = this.points[pointId];
     p.incr(diff);

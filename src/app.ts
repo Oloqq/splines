@@ -20,7 +20,7 @@ export class App extends AppTemplate {
       new V2(420, 700)
       ])
       .prepend([new V2(100, 300), new V2(0, 300), new V2(400, 200)])
-      .setConstraint(-1, Constraints.FIX_LEFT)
+      .setConstraint(-1, Constraints.MOVE_WITH_NEIGHBORS)
       .append([new V2(420, 750), new V2(640, 500), new V2(680, 500)])
     );
   }

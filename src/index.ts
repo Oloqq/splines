@@ -1,5 +1,6 @@
 import { App } from "./app";
 import { V2 } from "./lib/vector";
+import { Constraints } from "./splines/ControlPoint";
 import { status } from "./status";
 
 function getMousePos(canvas: HTMLCanvasElement, mouseEvent: MouseEvent): V2 {
@@ -48,6 +49,14 @@ function init() {
   let newBezier = document.getElementById("new bezier spline")! as HTMLButtonElement;
   newBezier.addEventListener("click", () => {
     status.info("new bezier spline requested, not implemented");
+  });
+
+  document.getElementById("fix neighbors")!.addEventListener("click", () => {
+    status.info("Fix positions of neighbors");
+    if (app.grip.count() == 0) {
+      status.info("No joints selected");
+    }
+    app.grip.addConstraints(Constraints.MOVE_WITH_NEIGHBORS);
   });
 
   app.run();

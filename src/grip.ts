@@ -1,4 +1,5 @@
 import { ControlPoint, V2, Spline } from "./splines";
+import { Constraints } from "./splines/ControlPoint";
 import styles from "./style";
 
 export const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
@@ -7,12 +8,16 @@ export type GripId = [number, number];
 type GripSet = Set<string>
 
 export class Grip {
-  points: GripSet = new Set<string>();
-  anchor: ControlPoint = DUMMY;
-  splines: Spline[];
+  private points: GripSet = new Set<string>();
+  private anchor: ControlPoint = DUMMY;
+  private splines: Spline[];
 
   constructor(splines: Spline[]) {
     this.splines = splines;
+  }
+
+  count() {
+    return this.points.size;
   }
 
   clear() {
@@ -36,6 +41,13 @@ export class Grip {
     for (let jsonval of this.points) {
       let [splineid, pointid] = JSON.parse(jsonval);
       this.splines[splineid].shift(pointid, diff);
+    }
+  }
+
+  addConstraints(con: Constraints) {
+    for (let jsonval of this.points) {
+      let [splineid, pointid] = JSON.parse(jsonval);
+      this.splines[splineid].addConstraint(pointid, con);
     }
   }
 }
