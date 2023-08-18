@@ -1,7 +1,7 @@
 import { App as AppTemplate } from "./lib/app";
 import { V2 } from "./lib/vector";
 import { Spline, BezierSpline } from "./splines";
-import { styles } from "./style";
+import styles from "./style";
 
 export class App extends AppTemplate {
   splines: Spline[] = [];
@@ -33,11 +33,11 @@ export class App extends AppTemplate {
 
   activate(splineId: number) {
     this.activeSpline((s) => {
-      s.style = styles.DEFAULT;
+      s.style = styles.splines.DEFAULT;
     });
     this.activeSplineId = splineId;
     this.activeSpline((s) => {
-      s.style = styles.ACTIVE;
+      s.style = styles.splines.ACTIVE;
     });
   }
 
