@@ -34,15 +34,15 @@ function init() {
 
   canvas.addEventListener("mousemove", (e) => {
     mousePos = app.ctx.canvsasToWorld(getMousePos(canvas, e));
-    app.mousemove(mousePos, mouseDown);
+    app.mousemove(mousePos, e, mouseDown);
   });
   canvas.addEventListener("mouseup", (e) => {
     mouseDown = false;
-    app.mouseup(mousePos);
+    app.mouseup(mousePos, e);
   });
   canvas.addEventListener("mousedown", (e) => {
     mouseDown = true;
-    app.mousedown(mousePos);
+    app.mousedown(mousePos, e);
   });
 
   let causeError = document.getElementById("cause error")! as HTMLButtonElement;

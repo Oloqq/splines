@@ -3,9 +3,37 @@ import { V2 } from "./lib/vector";
 import { ControlPoint, Spline, BezierSpline } from "./splines";
 import styles from "./style";
 
+const DUMMY = new ControlPoint(new V2(0, 0), styles.points.JOINT);
+
+class Grip {
+  points: Set<ControlPoint> = new Set();
+  anchor: ControlPoint = DUMMY;
+
+  clear() {
+    for (let g of this.points) {
+      g.active = false;
+    }
+    this.anchor = DUMMY;
+    this.points.clear();
+  }
+
+  expand(point: ControlPoint) {
+    point.active = true;
+    this.points.add(point);
+    this.anchor = point;
+  }
+
+  drag(pos: V2) {
+    let diff = pos.sub(this.anchor);
+    for (let g of this.points) {
+      g.incr(diff);
+    }
+  }
+}
+
 export class App extends AppTemplate {
   splines: Spline[] = [];
-  grip: ControlPoint[] = [];
+  grip: Grip = new Grip();
   activeSplineId: number|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -41,42 +69,31 @@ export class App extends AppTemplate {
     });
   }
 
-  changeGrip(newGrip: ControlPoint[]) {
-    console.log(`old grip ${this.grip.toString()}`);
-    for (let g of this.grip) {
-      g.active = false;
-    }
-    this.grip = newGrip;
-    for (let g of this.grip) {
-      g.active = true;
-    }
-    console.log(`new grip ${this.grip.toString()}`);
-  }
-
-  mouseup(pos: V2) {}
-
-  mousedown(pos: V2) {
-    let found = false;
-    for (let [i, spline] of this.splines.entries()) {
-      let grip = spline.catch(pos);
-      if (grip !== undefined) {
-        this.activate(i);
-        this.changeGrip([grip]);
-        found = true;
-        break;
+  catchAt(pos: V2, appendGrip: boolean, dry = false): [number|undefined, ControlPoint|undefined] {
+    let ispline: number, spline: Spline
+    for ([ispline, spline] of this.splines.entries()) {
+      let gripped = spline.catch(pos);
+      if (gripped !== undefined) {
+        if (!dry) {
+          this.activate(ispline);
+          if (!appendGrip) this.grip.clear();
+          this.grip.expand(gripped);
+        }
+        return [ispline, gripped];
       }
     }
-    if (found === false) this.changeGrip([]);
-    console.log(found);
+    if (!dry && !appendGrip) this.grip.clear();
+    return [undefined, undefined];
   }
 
-  mousemove(pos: V2, drag: boolean = false) {
-    if (drag && this.grip.length > 0) {
-      let diff = pos.sub(this.grip[0]);
-      for (let g of this.grip) {
-        g.incr(diff);
-      }
-    }
+  mouseup(pos: V2, more: MouseEvent) {}
+
+  mousedown(pos: V2, more: MouseEvent) {
+    this.catchAt(pos, more.ctrlKey);
+  }
+
+  mousemove(pos: V2, more: MouseEvent, drag: boolean = false) {
+    if (drag) this.grip.drag(pos);
   }
 
   causeError() {

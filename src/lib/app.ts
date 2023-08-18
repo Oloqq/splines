@@ -12,9 +12,9 @@ export class App {
 
   update() {}
   draw() {}
-  mouseup(pos: V2) {}
-  mousedown(pos: V2) {}
-  mousemove(pos: V2, drag: boolean) {}
+  mouseup(pos: V2, more: MouseEvent) {}
+  mousedown(pos: V2, more: MouseEvent) {}
+  mousemove(pos: V2, more: MouseEvent, drag: boolean) {}
 
   run() {
     let drawLoop = () => {
