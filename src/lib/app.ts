@@ -14,7 +14,7 @@ export class App {
   draw() {}
   mouseup(pos: V2) {}
   mousedown(pos: V2) {}
-  mousemove(pos: V2) {}
+  mousemove(pos: V2, drag: boolean) {}
 
   run() {
     let drawLoop = () => {

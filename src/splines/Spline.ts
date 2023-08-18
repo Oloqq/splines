@@ -1,4 +1,4 @@
-import { SplineStyle, styles } from "../style";
+import { ControlPointStyle, SplineStyle, styles } from "../style";
 import { Conte } from "../lib/conte";
 import { V2 } from "../lib/vector";
 
@@ -6,9 +6,27 @@ import { V2 } from "../lib/vector";
 export { Conte } from "../lib/conte";
 export { V2 } from "../lib/vector";
 
+const NORMAL_CONTROL_POINT_THICC = 1;
+const ACTIVE_CONTROL_POINT_THICC = 3;
+
 export class ControlPoint extends V2 {
-  constructor(x: number, y: number) {
-    super(x, y);
+  style: ControlPointStyle
+  active: boolean = false;
+
+  constructor(pos: V2, style: ControlPointStyle) {
+    super(pos.x, pos.y);
+    this.style = style;
+  }
+
+  caughtBy(hook: V2): boolean {
+    return hook.distance(this) < this.style.radius;
+  }
+
+  draw(ctx: Conte) {
+    ctx.beginPath();
+    ctx.lineWidth = this.active ? ACTIVE_CONTROL_POINT_THICC : NORMAL_CONTROL_POINT_THICC;
+    ctx.arc(this.x, this.y, this.style.radius, 0, 2 * Math.PI);
+    ctx.stroke();
   }
 }
 
@@ -22,19 +40,20 @@ export abstract class Spline {
     }
 
     this.points = [];
-    this.points.push(points[0]);
+
+    this.points.push(new ControlPoint(points[0], styles.points.JOINT));
     for (let i = 1; i < points.length; i += 3) {
-      this.points.push(points[i]);
-      this.points.push(points[i+1]);
-      this.points.push(points[i+2]);
+      this.points.push(new ControlPoint(points[i], styles.points.SKEWER));
+      this.points.push(new ControlPoint(points[i+1], styles.points.SKEWER));
+      this.points.push(new ControlPoint(points[i+2], styles.points.JOINT));
     }
   }
 
   abstract draw(ctx: Conte): void;
 
-  catch(v: V2): V2|undefined {
+  catch(v: V2): ControlPoint|undefined {
     for (let p of this.points) {
-      if (p.distance(v) < 20) {
+      if (p.caughtBy(v)) {
         return p;
       }
     }

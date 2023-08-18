@@ -2,10 +2,12 @@ import { Conte } from "./lib/conte";
 
 export interface SplineStyle {
   curve: (ctx: Conte) => void;
-  joints: (ctx: Conte) => void;
   skewers: (ctx: Conte) => void;
-  jointSize: number;
-  skewerSize: number;
+}
+
+export interface ControlPointStyle {
+  radius: number
+  applier: (ctx: Conte) => void;
 }
 
 export const styles = {
@@ -15,16 +17,11 @@ export const styles = {
         ctx.lineWidth = 3;
         ctx.strokeStyle = "rgb(230, 190, 2)";
       },
-      joints: (ctx: Conte) => {
-        ctx.lineWidth = 1;
-      },
       skewers: (ctx: Conte) => {
         ctx.lineWidth = 1;
         ctx.setLineDash([5, 3]);
         ctx.strokeStyle = "rgb(80, 120, 255)";
       },
-      jointSize: 15,
-      skewerSize: 10,
     } as SplineStyle,
 
     ACTIVE: {
@@ -32,16 +29,19 @@ export const styles = {
         ctx.lineWidth = 3;
         ctx.strokeStyle = "rgb(255, 0, 0)";
       },
-      joints: (ctx: Conte) => {
-        ctx.lineWidth = 2;
-      },
       skewers: (ctx: Conte) => {
         ctx.lineWidth = 1;
         ctx.setLineDash([5, 3]);
       },
-      jointSize: 15,
-      skewerSize: 10,
     } as SplineStyle
   },
+  points: {
+    SKEWER: {
+      radius: 7,
+    } as ControlPointStyle,
+    JOINT: {
+      radius: 12
+    } as ControlPointStyle
+  }
 }
 export default styles;

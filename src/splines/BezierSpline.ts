@@ -10,21 +10,10 @@ export class BezierSpline extends Spline {
   }
 
   draw(ctx: Conte): void {
-    let draw_node = (at: V2, r: number) => {
-      ctx.beginPath();
-      ctx.arc(at.x, at.y, r, 0, 2 * Math.PI);
-      ctx.stroke();
-    }
-
     for (let i = 0; i < this.points.length - 1; i += 3) {
       ctx.styledStroke(this.style.curve, () => {
         ctx.vmoveTo(this.points[i]);
         ctx.vbezierTo(this.points[i+1], this.points[i+2], this.points[i+3]);
-      });
-      ctx.withStyle(this.style.joints, () => {
-        draw_node(this.points[i], this.style.jointSize);
-        draw_node(this.points[i+1], this.style.skewerSize);
-        draw_node(this.points[i+2], this.style.skewerSize);
       });
       ctx.withStyle(this.style.skewers, () => {
         ctx.beginPath();
@@ -38,8 +27,9 @@ export class BezierSpline extends Spline {
         ctx.stroke();
       });
     }
-    ctx.withStyle(this.style.joints, () => {
-      draw_node(this.points[this.points.length - 1], this.style.jointSize);
-    });
+
+    for (let p of this.points) {
+      p.draw(ctx);
+    }
   }
 }

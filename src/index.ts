@@ -11,6 +11,7 @@ function init() {
   let canvas = document.getElementById("canvas")! as HTMLCanvasElement;
   let app = new App(canvas);
   let mousePos = new V2(0, 0);
+  let mouseDown = false;
 
   canvas.addEventListener("keydown", (e) => {
     switch (e.code) {
@@ -33,12 +34,14 @@ function init() {
 
   canvas.addEventListener("mousemove", (e) => {
     mousePos = app.ctx.canvsasToWorld(getMousePos(canvas, e));
-    app.mousemove(mousePos);
+    app.mousemove(mousePos, mouseDown);
   });
   canvas.addEventListener("mouseup", (e) => {
+    mouseDown = false;
     app.mouseup(mousePos);
   });
   canvas.addEventListener("mousedown", (e) => {
+    mouseDown = true;
     app.mousedown(mousePos);
   });
 

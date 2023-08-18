@@ -15,6 +15,16 @@ export class V2 {
     return new V2(this.x - v.x, this.y - v.y);
   }
 
+  incr(v: V2) {
+    this.x += v.x;
+    this.y += v.y;
+  }
+
+  decr(v: V2) {
+    this.x -= v.x;
+    this.y -= v.y;
+  }
+
   distance(v: V2): number {
     return Math.sqrt((this.x - v.x) ** 2 + (this.y - v.y) ** 2);
   }

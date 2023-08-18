@@ -1,11 +1,11 @@
 import { App as AppTemplate } from "./lib/app";
 import { V2 } from "./lib/vector";
-import { Spline, BezierSpline } from "./splines";
+import { ControlPoint, Spline, BezierSpline } from "./splines";
 import styles from "./style";
 
 export class App extends AppTemplate {
   splines: Spline[] = [];
-  grip: V2|undefined;
+  grip: ControlPoint[] = [];
   activeSplineId: number|undefined;
 
   constructor(canvas: HTMLCanvasElement) {
@@ -41,25 +41,41 @@ export class App extends AppTemplate {
     });
   }
 
-  mouseup(pos: V2) {
-    this.grip = undefined;
+  changeGrip(newGrip: ControlPoint[]) {
+    console.log(`old grip ${this.grip.toString()}`);
+    for (let g of this.grip) {
+      g.active = false;
+    }
+    this.grip = newGrip;
+    for (let g of this.grip) {
+      g.active = true;
+    }
+    console.log(`new grip ${this.grip.toString()}`);
   }
 
+  mouseup(pos: V2) {}
+
   mousedown(pos: V2) {
+    let found = false;
     for (let [i, spline] of this.splines.entries()) {
       let grip = spline.catch(pos);
       if (grip !== undefined) {
         this.activate(i);
-        this.grip = grip;
+        this.changeGrip([grip]);
+        found = true;
         break;
       }
     }
+    if (found === false) this.changeGrip([]);
+    console.log(found);
   }
 
-  mousemove(pos: V2) {
-    if (this.grip !== undefined) {
-      this.grip.x = pos.x;
-      this.grip.y = pos.y;
+  mousemove(pos: V2, drag: boolean = false) {
+    if (drag && this.grip.length > 0) {
+      let diff = pos.sub(this.grip[0]);
+      for (let g of this.grip) {
+        g.incr(diff);
+      }
     }
   }
 
