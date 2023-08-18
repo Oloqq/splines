@@ -46,7 +46,7 @@ export function makeConte(ctx: CanvasRenderingContext2D): Conte {
     this.moveTo(v.x, v.y);
   }
   c.vLineTo = function (v: V2) {
-    this.moveTo(v.x, v.y);
+    this.lineTo(v.x, v.y);
   }
   c.vBezierTo = function (v1: V2, v2: V2, v3: V2) {
     this.bezierCurveTo(v1.x, v1.y, v2.x, v2.y, v3.x, v3.y);
