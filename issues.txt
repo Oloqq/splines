@@ -1,3 +1,5 @@
 ctrl clicking active point should deselect it
-rename joints to joins or knots
 style constrained joins differently
+update position according to constraint on click
+
+checkbox to enable behavior: if user tries to apply constraint on a skewer, apply it to corresponding knot

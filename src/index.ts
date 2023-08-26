@@ -55,14 +55,24 @@ function init() {
     app.grip.applyConstraint(Constraint.MOVE_WITH_NEIGHBORS);
   });
 
+  document.getElementById("free")!.addEventListener("click", () => {
+    status.info("Removing constraint on selected knots")
+    app.grip.applyConstraint(Constraint.NONE);
+  });
+
   document.getElementById("align")!.addEventListener("click", () => {
-    status.info("Align skewers of selected joins")
+    status.info("Aligning skewers of selected knots")
     app.grip.applyConstraint(Constraint.ALIGN);
   });
 
   document.getElementById("mirror")!.addEventListener("click", () => {
-    status.info("Mirror skewers of selected joins")
+    status.info("Mirroring skewers of selected knots")
     app.grip.applyConstraint(Constraint.MIRROR);
+  });
+
+  document.getElementById("equal distance")!.addEventListener("click", () => {
+    status.info("Keeping skewers at the same distance from the knot")
+    app.grip.applyConstraint(Constraint.EQUIDIST);
   });
 
   (function setup_movetogether() {

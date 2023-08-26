@@ -10,6 +10,7 @@ export enum Constraint {
   MOVE_WITH_NEIGHBORS,
   ALIGN,
   MIRROR,
+  EQUIDIST,
   SKEWER,
 }
 

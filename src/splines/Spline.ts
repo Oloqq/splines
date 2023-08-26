@@ -108,6 +108,15 @@ export abstract class Spline {
         .mul(d1)    // copy length of moved vector
         .add(knot)  // place in reference to knot instead of (0, 0)
       other.set(spotForOther);
+    } else if (knot.requires(Constraint.EQUIDIST)) {
+      let d1 = knot.distance(point);
+      let d2 = knot.distance(other);
+      let spotForOther = other
+        .sub(knot) // difference vector
+        .div(d2)    // normalized difference vector
+        .mul(d1)    // copy length of moved vector
+        .add(knot)  // place in reference to knot instead of (0, 0)
+      other.set(spotForOther);
     }
   }
 
