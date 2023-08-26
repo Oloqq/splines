@@ -1,5 +1,5 @@
 import { ControlPoint, V2, Spline } from "./splines";
-import { Constraints } from "./splines/ControlPoint";
+import { Constraint } from "./splines/ControlPoint";
 import { status } from "./status";
 import styles from "./style";
 
@@ -44,13 +44,13 @@ export class Grip {
     }
   }
 
-  addConstraints(con: Constraints) {
+  applyConstraint(con: Constraint) {
     if (this.count() === 0) {
-      status.info("No joins selected for adding constraints");
+      status.info("No knots selected to add constraints to");
     }
     for (let jsonval of this.points) {
       let [splineid, pointid] = JSON.parse(jsonval);
-      this.splines[splineid].addConstraint(pointid, con);
+      this.splines[splineid].constrain(pointid, con);
     }
   }
 }

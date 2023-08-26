@@ -1,7 +1,7 @@
 import { SplineStyle, styles } from "../style";
 import { Conte } from "../lib/conte";
 import { V2 } from "../lib/vector";
-import { ControlPoint, Constraints, PointRole } from "./ControlPoint";
+import { ControlPoint, Constraint } from "./ControlPoint";
 import { status } from "../status";
 
 // Re-exports for deriving classes
@@ -53,18 +53,13 @@ export abstract class Spline {
     return this.points[pointId];
   }
 
-  setConstraint(pointId: number, constraint: Constraints): void {
+  constrain(pointId: number, constraint: Constraint): void {
     let point = this.getPoint(pointId);
-    if (!point.joint) {
+    if (!point.isKnot) {
       status.warn("Can't set constraints on skewers");
       return;
     }
-    point.constraints = constraint;
-  }
-
-  addConstraint(pointId: number, constraint: Constraints): void {
-    let point = this.getPoint(pointId);
-    this.setConstraint(pointId, point.constraints | constraint);
+    point.constraint = constraint;
   }
 
   // returns [Knot, Skewer on the other side of the knot]
@@ -81,7 +76,7 @@ export abstract class Spline {
   private shiftKnot(pointId: number, diff: V2) {
     let point = this.points[pointId];
     point.incr(diff);
-    if (point.requires(Constraints.MOVE_WITH_NEIGHBORS) || point.requires(Constraints.ALIGN) || point.requires(Constraints.MIRROR)) {
+    if (point.requires(Constraint.MOVE_WITH_NEIGHBORS) || point.requires(Constraint.ALIGN) || point.requires(Constraint.MIRROR)) {
       if (pointId > 0)
         this.points[pointId - 1].incr(diff)
       if (pointId < this.points.length - 1)
@@ -96,7 +91,7 @@ export abstract class Spline {
     if (other == undefined)
       return;
 
-    if (knot.requires(Constraints.ALIGN)) {
+    if (knot.requires(Constraint.ALIGN)) {
       let d1 = knot.distance(point);
       let d2 = knot.distance(other);
       let spotForOther = knot
@@ -105,7 +100,7 @@ export abstract class Spline {
         .mul(d2)    // preserve original length in align mode
         .add(knot)  // place in reference to knot instead of (0, 0)
       other.set(spotForOther);
-    } else if (knot.requires(Constraints.MIRROR)) {
+    } else if (knot.requires(Constraint.MIRROR)) {
       let d1 = knot.distance(point);
       let spotForOther = knot
         .sub(point) // difference vector
@@ -118,7 +113,7 @@ export abstract class Spline {
 
   shift(pointId: number, diff: V2) {
     let p = this.points[pointId];
-    if (p.joint) {
+    if (p.isKnot) {
       this.shiftKnot(pointId, diff);
     }
     else {

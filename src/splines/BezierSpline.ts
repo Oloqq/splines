@@ -1,5 +1,5 @@
 import styles from "../style";
-import { Constraints, ControlPoint } from "./ControlPoint";
+import { Constraint, ControlPoint } from "./ControlPoint";
 import { Spline, Conte, V2 } from "./Spline";
 
 export class BezierSpline extends Spline {
@@ -65,13 +65,8 @@ export class BezierSpline extends Spline {
     return this;
   }
 
-  setConstraint(pointId: number, constraint: Constraints): BezierSpline {
-    super.setConstraint(pointId, constraint)
-    return this;
-  }
-
-  addConstraint(pointId: number, constraint: Constraints): BezierSpline {
-    super.addConstraint(pointId, constraint)
+  constrain(pointId: number, constraint: Constraint): BezierSpline {
+    super.constrain(pointId, constraint)
     return this;
   }
 }

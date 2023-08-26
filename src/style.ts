@@ -39,7 +39,7 @@ export const styles = {
     SKEWER: {
       radius: 7,
     } as ControlPointStyle,
-    JOINT: {
+    KNOT: {
       radius: 12
     } as ControlPointStyle
   }

@@ -5,28 +5,31 @@ import { Conte } from "../lib/conte";
 const NORMAL_CONTROL_POINT_THICC = 1;
 const ACTIVE_CONTROL_POINT_THICC = 3;
 
-export enum Constraints {
-  NONE                = 0,
-  MOVE_WITH_NEIGHBORS = 1 << 0,
-  _                   = 1 << 1,
-  ALIGN               = 1 << 2,
-  MIRROR              = 1 << 3,
-}
-
-export enum PointRole {
-  KNOT, LEFT, RIGHT
+export enum Constraint {
+  NONE,
+  MOVE_WITH_NEIGHBORS,
+  ALIGN,
+  MIRROR,
+  SKEWER,
 }
 
 export class ControlPoint extends V2 {
   style: ControlPointStyle
   active: boolean = false;
-  joint: boolean;
-  constraints: Constraints = Constraints.NONE;
+  isKnot: boolean;
+  constraint: Constraint = Constraint.NONE;
 
-  constructor(pos: V2, joint: boolean) {
+  constructor(pos: V2, isKnot: boolean, constraint: Constraint|undefined = undefined) {
     super(pos.x, pos.y);
-    this.joint = joint;
-    this.style = joint ? styles.points.JOINT : styles.points.SKEWER;
+    this.isKnot = isKnot;
+    if (isKnot) {
+      this.style = styles.points.KNOT;
+      this.constraint = constraint ?? Constraint.NONE;
+    }
+    else {
+      this.style = styles.points.SKEWER;
+      this.constraint = Constraint.SKEWER;
+    }
   }
 
   caughtBy(hook: V2): boolean {
@@ -40,7 +43,7 @@ export class ControlPoint extends V2 {
     ctx.stroke();
   }
 
-  requires(con: Constraints): boolean {
-    return (con & this.constraints) === con;
+  requires(con: Constraint): boolean {
+    return this.constraint === con;
   }
 }

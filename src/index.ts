@@ -1,6 +1,6 @@
 import { App } from "./app";
 import { V2 } from "./lib/vector";
-import { Constraints } from "./splines/ControlPoint";
+import { Constraint } from "./splines/ControlPoint";
 import { status } from "./status";
 
 function getMousePos(canvas: HTMLCanvasElement, mouseEvent: MouseEvent): V2 {
@@ -52,17 +52,17 @@ function init() {
 
   document.getElementById("fix neighbors")!.addEventListener("click", () => {
     status.info("Fix positions of neighbors");
-    app.grip.addConstraints(Constraints.MOVE_WITH_NEIGHBORS);
+    app.grip.applyConstraint(Constraint.MOVE_WITH_NEIGHBORS);
   });
 
   document.getElementById("align")!.addEventListener("click", () => {
     status.info("Align skewers of selected joins")
-    app.grip.addConstraints(Constraints.ALIGN);
+    app.grip.applyConstraint(Constraint.ALIGN);
   });
 
   document.getElementById("mirror")!.addEventListener("click", () => {
     status.info("Mirror skewers of selected joins")
-    app.grip.addConstraints(Constraints.MIRROR);
+    app.grip.applyConstraint(Constraint.MIRROR);
   });
 
   (function setup_movetogether() {
@@ -71,7 +71,7 @@ function init() {
       if (movetogether.checked) {
         for (let s of app.splines) {
           for (let i = 0; i < s.points.length; i ++) {
-            s.setConstraint(i, Constraints.MOVE_WITH_NEIGHBORS);
+            s.constrain(i, Constraint.MOVE_WITH_NEIGHBORS);
           }
         }
         status.info("Each control point has to be moved individually");
@@ -79,7 +79,7 @@ function init() {
       else {
         for (let s of app.splines) {
           for (let i = 0; i < s.points.length; i ++) {
-            s.setConstraint(i, Constraints.NONE);
+            s.constrain(i, Constraint.NONE);
           }
         }
         status.info("Moving each joint will move it's skewers as well");
