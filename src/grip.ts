@@ -45,6 +45,9 @@ export class Grip {
   }
 
   addConstraints(con: Constraints) {
+    if (this.count() === 0) {
+      status.info("No joins selected for adding constraints");
+    }
     for (let jsonval of this.points) {
       let [splineid, pointid] = JSON.parse(jsonval);
       this.splines[splineid].addConstraint(pointid, con);

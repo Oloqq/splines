@@ -1,7 +1,7 @@
 import { SplineStyle, styles } from "../style";
 import { Conte } from "../lib/conte";
 import { V2 } from "../lib/vector";
-import { ControlPoint, Constraints } from "./ControlPoint";
+import { ControlPoint, Constraints, PointRole } from "./ControlPoint";
 import { status } from "../status";
 
 // Re-exports for deriving classes
@@ -67,15 +67,51 @@ export abstract class Spline {
     this.setConstraint(pointId, point.constraints | constraint);
   }
 
-  shift(pointId: number, diff: V2) {
-    if (pointId < 0 || pointId > this.points.length - 1)
-      return;
+  // returns [Knot, Skewer on the other side of the knot]
+  private family(pointId: number): [ControlPoint, ControlPoint|undefined] {
+    let shifted = pointId - 1;
+    if (shifted % 3 == 0)
+      return [this.points[pointId - 1], this.points[pointId - 2] ?? undefined];
+    else if (shifted % 3 == 1)
+      return [this.points[pointId + 1], this.points[pointId + 2] ?? undefined];
+    else
+      throw new Error("Family called for a Knot")
+  }
 
+  private shiftKnot(pointId: number, diff: V2) {
+    let point = this.points[pointId];
+    point.incr(diff);
+    if (point.requires(Constraints.MOVE_WITH_NEIGHBORS) || point.requires(Constraints.ALIGN) || point.requires(Constraints.MIRROR)) {
+      if (pointId > 0)
+        this.points[pointId - 1].incr(diff)
+      if (pointId < this.points.length - 1)
+        this.points[pointId + 1].incr(diff)
+    }
+  }
+
+  private shiftSkewer(pointId: number, diff: V2) {
+    let point = this.points[pointId];
+    let [knot, other] = this.family(pointId);
+    point.incr(diff);
+    if (other != undefined && knot.requires(Constraints.ALIGN)) {
+      let d1 = knot.distance(point);
+      let d2 = knot.distance(other);
+      let spotForOther = knot
+        .sub(point) // difference vector
+        .div(d1)    // normalized difference vector
+        .mul(d2)    // preserve original length in align mode
+        .add(knot)  // place in reference to knot instead of (0, 0)
+      other.set(spotForOther);
+    }
+  }
+
+  shift(pointId: number, diff: V2) {
     let p = this.points[pointId];
-    p.incr(diff);
-    if (p.requires(Constraints.MOVE_WITH_NEIGHBORS)) {
-      this.shift(pointId + 1, diff);
-      this.shift(pointId - 1, diff);
+    if (p.joint) {
+      this.shiftKnot(pointId, diff);
+    }
+    else {
+      this.shiftSkewer(pointId, diff);
     }
   }
 }

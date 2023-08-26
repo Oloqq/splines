@@ -7,12 +7,25 @@ export class V2 {
     this.y = y;
   }
 
+  set(v: V2) {
+    this.x = v.x;
+    this.y = v.y;
+  }
+
   add(v: V2): V2 {
     return new V2(this.x + v.x, this.y + v.y);
   }
 
   sub(v: V2): V2 {
     return new V2(this.x - v.x, this.y - v.y);
+  }
+
+  mul(s: number) {
+    return new V2(this.x * s, this.y * s);
+  }
+
+  div(s: number) {
+    return new V2(this.x / s, this.y / s);
   }
 
   incr(v: V2) {

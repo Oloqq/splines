@@ -13,6 +13,10 @@ export enum Constraints {
   MIRROR              = 1 << 3,
 }
 
+export enum PointRole {
+  KNOT, LEFT, RIGHT
+}
+
 export class ControlPoint extends V2 {
   style: ControlPointStyle
   active: boolean = false;

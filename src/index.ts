@@ -52,14 +52,12 @@ function init() {
 
   document.getElementById("fix neighbors")!.addEventListener("click", () => {
     status.info("Fix positions of neighbors");
-    if (app.grip.count() == 0) {
-      status.info("No joints selected");
-    }
     app.grip.addConstraints(Constraints.MOVE_WITH_NEIGHBORS);
   });
 
   document.getElementById("align")!.addEventListener("click", () => {
-    status.info("align not implemented");
+    status.info("Align skewers of selected joins")
+    app.grip.addConstraints(Constraints.ALIGN);
   });
 
   document.getElementById("mirror")!.addEventListener("click", () => {
