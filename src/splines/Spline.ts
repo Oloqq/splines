@@ -93,13 +93,24 @@ export abstract class Spline {
     let point = this.points[pointId];
     let [knot, other] = this.family(pointId);
     point.incr(diff);
-    if (other != undefined && knot.requires(Constraints.ALIGN)) {
+    if (other == undefined)
+      return;
+
+    if (knot.requires(Constraints.ALIGN)) {
       let d1 = knot.distance(point);
       let d2 = knot.distance(other);
       let spotForOther = knot
         .sub(point) // difference vector
         .div(d1)    // normalized difference vector
         .mul(d2)    // preserve original length in align mode
+        .add(knot)  // place in reference to knot instead of (0, 0)
+      other.set(spotForOther);
+    } else if (knot.requires(Constraints.MIRROR)) {
+      let d1 = knot.distance(point);
+      let spotForOther = knot
+        .sub(point) // difference vector
+        .div(d1)    // normalized difference vector
+        .mul(d1)    // copy length of moved vector
         .add(knot)  // place in reference to knot instead of (0, 0)
       other.set(spotForOther);
     }

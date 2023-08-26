@@ -61,7 +61,8 @@ function init() {
   });
 
   document.getElementById("mirror")!.addEventListener("click", () => {
-    status.info("mirror not implemented");
+    status.info("Mirror skewers of selected joins")
+    app.grip.addConstraints(Constraints.MIRROR);
   });
 
   (function setup_movetogether() {

@@ -1,3 +1,4 @@
 ctrl clicking active point should deselect it
 rename joints to joins or knots
 style constrained joins differently
+handle setting multiple constraints properly
