@@ -1,4 +1,2 @@
 ctrl clicking active point should deselect it
 style constrained joins differently
-
-checkbox to enable behavior: if user tries to apply constraint on a skewer, apply it to corresponding knot

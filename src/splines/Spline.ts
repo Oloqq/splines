@@ -56,8 +56,8 @@ export abstract class Spline {
   constrain(pointId: number, constraint: Constraint): void {
     let point = this.getPoint(pointId);
     if (!point.isKnot) {
-      status.warn("Can't set constraints on skewers");
-      return;
+      let [knot, _] = this.family(pointId);
+      point = knot;
     }
 
     point.constraint = constraint;
