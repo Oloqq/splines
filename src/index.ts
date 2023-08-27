@@ -72,27 +72,26 @@ function init() {
 
   document.getElementById("equal distance")!.addEventListener("click", () => {
     status.info("Keeping skewers at the same distance from the knot")
-    app.grip.applyConstraint(Constraint.EQUIDIST);
   });
 
   (function setup_movetogether() {
     let movetogether = document.getElementById("move together")! as HTMLInputElement;
     let movetogether_applier = () => {
       if (movetogether.checked) {
+        status.info("Moving each knot will move it's skewers as well");
         for (let s of app.splines) {
-          for (let i = 0; i < s.points.length; i ++) {
+          for (let i = 0; i < s.points.length; i += 3) {
             s.constrain(i, Constraint.MOVE_WITH_NEIGHBORS);
           }
         }
-        status.info("Each control point has to be moved individually");
       }
       else {
+        status.info("Each control point has to be moved individually");
         for (let s of app.splines) {
-          for (let i = 0; i < s.points.length; i ++) {
+          for (let i = 0; i < s.points.length; i += 3) {
             s.constrain(i, Constraint.NONE);
           }
         }
-        status.info("Moving each joint will move it's skewers as well");
       }
     };
     movetogether_applier();
