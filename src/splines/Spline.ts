@@ -59,7 +59,14 @@ export abstract class Spline {
       status.warn("Can't set constraints on skewers");
       return;
     }
+
     point.constraint = constraint;
+    if (constraint == Constraint.ALIGN || constraint == Constraint.MIRROR) {
+      let lhs = this.points[pointId - 1];
+      let rhs = this.points[pointId + 1];
+      if (lhs == undefined || rhs == undefined) return;
+      this.applyConstraint(lhs, point, rhs);
+    }
   }
 
   // returns [Knot, Skewer on the other side of the knot]
@@ -84,40 +91,61 @@ export abstract class Spline {
     }
   }
 
+  private applyAlign(moved: ControlPoint, knot: ControlPoint, toMove: ControlPoint) {
+    let d1 = knot.distance(moved);
+    let d2 = knot.distance(toMove);
+    toMove.set(knot
+              .sub(moved) // difference vector
+              .div(d1)    // normalized difference vector
+              .mul(d2)    // preserve original length in align mode
+              .add(knot)  // place in reference to knot instead of (0, 0));
+    );
+  }
+
+  private applyMirror(moved: ControlPoint, knot: ControlPoint, toMove: ControlPoint) {
+    let d1 = knot.distance(moved);
+    let d2 = knot.distance(toMove);
+    toMove.set(knot
+              .sub(moved) // difference vector
+              .div(d1)    // normalized difference vector
+              .mul(d1)    // copy length of moved vector
+              .add(knot)  // place in reference to knot instead of (0, 0));
+    );
+  }
+
+  private applyEquidist(moved: ControlPoint, knot: ControlPoint, toMove: ControlPoint) {
+    let d1 = knot.distance(moved);
+    let d2 = knot.distance(toMove);
+    toMove.set(toMove
+              .sub(knot) // difference vector
+              .div(d2)    // normalized difference vector
+              .mul(d1)    // copy length of moved vector
+              .add(knot) // place in reference to knot instead of (0, 0));
+    )
+  }
+
+  private applyConstraint(moved: ControlPoint, knot: ControlPoint, toMove: ControlPoint) {
+    switch (knot.constraint) {
+      case Constraint.ALIGN:
+        this.applyAlign(moved, knot, toMove);
+        break;
+      case Constraint.MIRROR:
+        this.applyMirror(moved, knot, toMove);
+        break;
+      case Constraint.EQUIDIST:
+        this.applyEquidist(moved, knot, toMove);
+        break;
+    }
+  }
+
   private shiftSkewer(pointId: number, diff: V2) {
-    let point = this.points[pointId];
+    let moved = this.points[pointId];
     let [knot, other] = this.family(pointId);
-    point.incr(diff);
+    moved.incr(diff);
     if (other == undefined)
       return;
 
-    if (knot.requires(Constraint.ALIGN)) {
-      let d1 = knot.distance(point);
-      let d2 = knot.distance(other);
-      let spotForOther = knot
-        .sub(point) // difference vector
-        .div(d1)    // normalized difference vector
-        .mul(d2)    // preserve original length in align mode
-        .add(knot)  // place in reference to knot instead of (0, 0)
-      other.set(spotForOther);
-    } else if (knot.requires(Constraint.MIRROR)) {
-      let d1 = knot.distance(point);
-      let spotForOther = knot
-        .sub(point) // difference vector
-        .div(d1)    // normalized difference vector
-        .mul(d1)    // copy length of moved vector
-        .add(knot)  // place in reference to knot instead of (0, 0)
-      other.set(spotForOther);
-    } else if (knot.requires(Constraint.EQUIDIST)) {
-      let d1 = knot.distance(point);
-      let d2 = knot.distance(other);
-      let spotForOther = other
-        .sub(knot) // difference vector
-        .div(d2)    // normalized difference vector
-        .mul(d1)    // copy length of moved vector
-        .add(knot)  // place in reference to knot instead of (0, 0)
-      other.set(spotForOther);
-    }
+    this.applyConstraint(moved, knot, other);
   }
 
   shift(pointId: number, diff: V2) {
